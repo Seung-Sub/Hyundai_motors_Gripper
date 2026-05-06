@@ -64,10 +64,19 @@ sudo ./scripts/install_daemon.sh --system
 #   - registers systemd unit, enables on boot, starts now
 #   - pings localhost:50053 to verify
 
-# 4. From Python:
+# 4. (optional) install the Python client as a pip package:
+pip install ./python
+#   — exposes `art_gripper_client` everywhere without sys.path tricks.
+
+# 5. Sanity check: ping + info + status (no motion)
+python3 tests/sanity_check.py
+# add --motion to do one open/close cycle in air (no object):
+python3 tests/sanity_check.py --motion
+
+# 6. Use the client from your code:
 python3 - <<'PY'
-import sys; sys.path.insert(0, "python")
-from art_gripper_client import ArtGripperInterface
+from art_gripper_client import ArtGripperInterface  # if pip-installed
+# or:  import sys; sys.path.insert(0, "python")  # if not
 g = ArtGripperInterface()                # auto motor_on
 print("max_width:", g.metadata.max_width)
 print("state:", g.get_state())
@@ -80,7 +89,8 @@ PY
 
 If `install_etherlab.sh`'s slave detection prints `NETX 90-RE/ECS`, the
 hardware path is good. If `install_daemon.sh`'s ping prints `b'pong'`, the
-TCP layer is good. From there everything else is application code.
+TCP layer is good. If `tests/sanity_check.py --motion` finishes with
+`OK — air cycle completed cleanly`, the whole stack is healthy.
 
 ---
 

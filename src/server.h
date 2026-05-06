@@ -1,5 +1,10 @@
-// TCP binary protocol server for art_gripper_standalone.
-// Mutates RobotData same way as the ROS handlers in gripper_ecat.cpp.
+// MIT License
+// Copyright (c) 2026 Seung-Sub
+// See LICENSE.md for the full notice.
+//
+// TCP binary protocol server for art_gripper_daemon. Each request handler
+// mutates the shared RobotData struct using the same locking discipline as
+// the original HMC ROS service handlers.
 #pragma once
 #include <atomic>
 #include <thread>

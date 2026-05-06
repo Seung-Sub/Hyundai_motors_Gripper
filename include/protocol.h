@@ -1,5 +1,10 @@
-// art_gripper_standalone protocol — binary TCP, length-prefixed messages.
-// Designed for sub-millisecond IPC latency on loopback (mirror of Polymetis weight class).
+// MIT License
+// Copyright (c) 2026 Seung-Sub
+// See LICENSE.md for the full notice.
+//
+// ART Gripper standalone protocol — binary TCP, length-prefixed messages.
+// Designed for sub-millisecond IPC latency on loopback (mirrors the weight
+// class of Polymetis' gRPC server while staying ROS-free).
 //
 // Wire format
 //   Request : [u8 op | u32 payload_len | bytes payload]

@@ -1,3 +1,6 @@
+# MIT License
+# Copyright (c) 2026 Seung-Sub
+# See LICENSE.md for the full notice.
 """ART Gripper Python client.
 
 Talks to the standalone TCP daemon (`art_gripper_daemon`) on localhost:50053

@@ -1,6 +1,10 @@
-// art_gripper_standalone — ROS-free daemon entry.
-// Mirrors gripper_pier_ws/src/art_gripper/src/gripper_ecat/main.cpp but replaces
-// rclcpp::spin(GripperEcat) with our TCP binary protocol server.
+// MIT License
+// Copyright (c) 2026 Seung-Sub
+// See LICENSE.md for the full notice.
+//
+// art_gripper_daemon — ROS-free entry point. Mirrors the original HMC ROS
+// node main.cpp but replaces rclcpp::spin() with our TCP binary protocol
+// server, while reusing the original initDevice() / initThread() unchanged.
 #include <signal.h>
 #include <chrono>
 #include <thread>

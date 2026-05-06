@@ -1,3 +1,6 @@
+// MIT License
+// Copyright (c) 2026 Seung-Sub
+// See LICENSE.md for the full notice.
 #include "server.h"
 #include "protocol.h"
 

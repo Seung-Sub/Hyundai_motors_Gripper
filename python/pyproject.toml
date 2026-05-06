@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "art-gripper-client"
+version = "1.0.0"
+description = "Python client for the Hyundai Motors ART Gripper standalone daemon (ROS-free)"
+readme = "../README.md"
+requires-python = ">=3.7"
+license = {file = "../LICENSE.md"}
+authors = [{name = "Seung-Sub", email = "knykist@kist.re.kr"}]
+keywords = ["ethercat", "gripper", "robotics", "polymetis"]
+# Pure stdlib — no runtime dependencies.
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Seung-Sub/Hyundai_motors_Gripper"
+Source = "https://github.com/Seung-Sub/Hyundai_motors_Gripper"
+
+[tool.setuptools]
+py-modules = ["art_gripper_client"]
