@@ -1,0 +1,16 @@
+[Unit]
+Description=ART Gripper standalone daemon (EtherCAT, ROS-free)
+After=ethercat.service network.target
+Requires=ethercat.service
+
+[Service]
+Type=simple
+User=%i
+ExecStart=/usr/local/bin/art_gripper_daemon
+Restart=on-failure
+RestartSec=3
+LimitMEMLOCK=infinity
+LimitRTPRIO=99
+
+[Install]
+WantedBy=multi-user.target
