@@ -136,6 +136,23 @@ e.g. after rebuilding the binary):
 sudo systemctl restart art-gripper-daemon
 ```
 
+### Recovering after the bus is disturbed (no reboot)
+
+If the EtherCAT bus has been disrupted while the host stayed powered on —
+gripper cable unplugged & replugged, gripper swapped, gripper power-cycled
+on its own — the master kernel module typically needs a full restart to
+pick the slave up again. Doing that requires stopping the daemon first,
+which we wrapped in a single script:
+
+```bash
+sudo ./scripts/restart_gripper.sh
+```
+
+Output ends with `OK — gripper recovered without reboot.` if the slave is
+detected, the daemon is back up, and the TCP ping returns `pong`. The
+script does the right ordering — `daemon stop → ethercat restart → daemon
+start` — so you don't have to remember it.
+
 ### Replicating on another machine
 
 The install scripts are idempotent on a clean Ubuntu 22.04 host:
@@ -329,6 +346,8 @@ bit-identical to the official driver.
 | `set_pose()` calls have no effect | Firmware silently ignores pose targets until you've called `reset_abs_encoder()` once after boot | `g.reset_abs_encoder()` — only needed if you really want to rotate. The 2-finger workflow doesn't need this. |
 | `goto(width=0)` stops at ~30 mm tip gap | Expected — `width=0` is the firmware's mechanical hard-close, not finger-tip-touch | Spec; not a bug |
 | `is_grasped` toggles 0x09 ↔ 0x19 during HOLD | Just the servo-enabled bit (0x10) cycling — readiness/contact bits are unchanged | Cosmetic; ignore |
+| `ethercat slaves` empty *after* unplug/replug while host stayed on | Master kernel module is stuck on the previous link state; just restarting the daemon isn't enough | `sudo ./scripts/restart_gripper.sh` (does daemon stop → ethercat restart → daemon start in the right order) |
+| Swapped to a different ART gripper without rebooting | Same as above — master needs to re-enumerate slaves | `sudo ./scripts/restart_gripper.sh` |
 
 ---
 
