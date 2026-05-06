@@ -94,6 +94,65 @@ TCP layer is good. If `tests/sanity_check.py --motion` finishes with
 
 ---
 
+## Boot-time behaviour (after the install scripts)
+
+Both install scripts wire the gripper into systemd, so once you've run
+`install_etherlab.sh` and `install_daemon.sh --system` **once**, every
+subsequent power cycle brings the gripper back online with no manual work.
+What happens automatically on every boot:
+
+1. **`ethercat.service`** loads `ec_master.ko` + `ec_generic.ko` kernel
+   modules, attaches the configured NIC (MAC from
+   `/etc/sysconfig/ethercat`), and creates `/dev/EtherCAT0` (mode `0666`
+   thanks to the udev rule installed at `/etc/udev/rules.d/99-EtherCAT.rules`).
+2. **`art-gripper-daemon.service`** waits for `ethercat.service` to be
+   active (`After=ethercat.service`, `Requires=ethercat.service` in the unit
+   file), then starts `/usr/local/bin/art_gripper_daemon`. The daemon
+   activates the EtherCAT master, opens the control thread, and starts
+   listening on TCP `0.0.0.0:50053`.
+3. Any client connecting to `127.0.0.1:50053` (e.g. `art_gripper_client.py`)
+   immediately sees the gripper.
+
+To verify after a reboot:
+
+```bash
+systemctl is-active ethercat art-gripper-daemon       # both should be 'active'
+ss -tlnp | grep 50053                                  # listening
+/opt/etherlab/bin/ethercat slaves                      # slave 0 = NETX 90-RE/ECS
+python3 tests/sanity_check.py                          # ping + info + state
+```
+
+To manually disable / re-enable the boot-time behaviour:
+
+```bash
+sudo systemctl disable art-gripper-daemon ethercat     # stops auto-start on boot
+sudo systemctl enable  art-gripper-daemon ethercat     # restores it
+```
+
+If you only want to restart the daemon (keeping the EtherCAT master alive,
+e.g. after rebuilding the binary):
+
+```bash
+sudo systemctl restart art-gripper-daemon
+```
+
+### Replicating on another machine
+
+The install scripts are idempotent on a clean Ubuntu 22.04 host:
+
+```bash
+git clone https://github.com/Seung-Sub/Hyundai_motors_Gripper.git
+cd Hyundai_motors_Gripper
+sudo NIC_NAME=<your-NIC> ./scripts/install_etherlab.sh
+sudo ./scripts/install_daemon.sh --system
+sudo reboot                                            # optional — verify the auto-start
+```
+
+After the reboot, `systemctl is-active ethercat art-gripper-daemon` should
+print two `active` lines without any further commands.
+
+---
+
 ## Architecture
 
 ```
