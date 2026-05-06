@@ -6,9 +6,8 @@ build-backend = "setuptools.build_meta"
 name = "art-gripper-client"
 version = "1.0.0"
 description = "Python client for the Hyundai Motors ART Gripper standalone daemon (ROS-free)"
-readme = "../README.md"
 requires-python = ">=3.7"
-license = {file = "../LICENSE.md"}
+license = {text = "MIT"}
 authors = [{name = "Seung-Sub", email = "knykist@kist.re.kr"}]
 keywords = ["ethercat", "gripper", "robotics", "polymetis"]
 # Pure stdlib — no runtime dependencies.
